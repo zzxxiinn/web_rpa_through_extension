@@ -12,3 +12,9 @@ async def open_page(ws, data):
     await ws.send(json.dumps({"directive": "openPage", "data": data}))
     result = await ws.recv()
     return result
+
+
+async def click_by_xpath(ws, data):
+    await ws.send(json.dumps({"directive": "clickByXpath", "data": data}))
+    result = await ws.recv()
+    return result
