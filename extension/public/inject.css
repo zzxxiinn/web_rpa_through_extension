@@ -1,0 +1,7 @@
+#cover-mask{
+  border:2px solid	#ff3c00;
+  position: absolute;
+  pointer-events: none;
+  background: #ff3c0030;
+  z-index: 10000;
+}

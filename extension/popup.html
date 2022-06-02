@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			body{
+				background-color: #18191c;
+				font-family: monospace;
+				font-size: 13px;
+				color: #d0d0d0;
+				width: 150px;
+				padding: 5px;
+				min-height: 40px;
+			}
+
+			#content {
+				width: 100px;
+				height: 25px;
+				margin: auto;
+			}
+			
+			.showUI {
+				color: #fff;
+				height: 25px;
+				width: auto;
+				border: 1px #26282c solid;
+				cursor: pointer;
+				text-align: center;
+				vertical-align: middle;
+				line-height: 24px;
+				background-color: #66CCFF;
+			}
+			
+			span {
+				color: #66CCFF;
+			}
+
+			.showUI:hover {
+				background-color: #2d2f34;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="main">
+			<div id="content">
+				<span>XPATH界面:</span>
+				<button class="showUI" id="onBtn" >打开</button>
+				<button class="showUI" id="offBtn">关闭</button>
+			</div>
+		</div>
+	</body>
+	<script src="js/popup.js"></script>
+</html>
