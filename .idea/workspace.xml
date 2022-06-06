@@ -2,18 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="90414eab-dae0-49f1-882f-13017a0e4673" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.editorconfig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/utils/get_browser_path.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/utils/tools.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/ws_server_demo.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ws_server_demo.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/extension/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/extension/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/client.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/sanic_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/sanic_socket_io.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/tools.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/extension/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/extension/pnpm-lock.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extension/vue.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/extension/vue.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extension/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/extension/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/web_module.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/web_module.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

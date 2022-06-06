@@ -3,18 +3,18 @@ const path = require('path')
 
 const pages = {}
 
-const chromeName = ['popup', 'background', 'options', 'content']
-const executeScript = ['getPageData', 'clickElement', 'setInputValue', 'executeScript']
+const chromeName = ['background', 'content']
+const directiveScript = ['directiveScript']
 chromeName.forEach(name => {
   pages[name] = {
-    entry: `src/pages/${name}/main.js`,
+    entry: `src/${name}/main.js`,
     template: 'public/index.html',
     filename: `${name}.html`
   }
 })
-executeScript.forEach(name => {
+directiveScript.forEach(name => {
   pages[name] = {
-    entry: `src/pages/script/${name}.js`,
+    entry: `src/directives/${name}.js`,
     template: 'public/index.html',
     filename: `${name}.html`
   }

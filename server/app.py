@@ -1,14 +1,16 @@
 import json
+import time
 from asyncio import Queue
 
 from sanic import Sanic, text, Request
 
 from server.utils.get_browser_path import open_browser
-from web_module import open_page, click_by_xpath
+from web_module import open_page, click_by_xpath, close_page
 
 task_map = {
     'openPage': open_page,
-    'clickByXpath': click_by_xpath
+    'clickByXpath': click_by_xpath,
+    'closePage': close_page
 }
 
 SUCC = 'SUCCESS'
@@ -43,7 +45,7 @@ async def feed(request: Request, ws):
     while True:
         try:
             task_data = await request.app.ctx.task_queue.get()
-            task_result = await task_map[task_data['directive']](ws, task_data['data'])
+            task_result = await task_map[task_data['directive']](ws, **task_data['data'])
             request.app.ctx.task_result_queue.put_nowait(task_result)
         except Exception as e:
             print(e)
@@ -58,6 +60,23 @@ async def hello_world(request):
         # data: dict = task_result['res']
         data = {'url': test_url, 'xpath': '//*[@id="hotsearch-content-wrapper"]/li[1]/a'}
         status, task_result = await run_task({"directive": "clickByXpath", "data": data})
+
+    return text(json.dumps(task_result))
+
+
+@app.get("/open_and_close_tab")
+async def open_and_close_tab(request):
+    test_url = "https://www.baidu.com/"
+    print('step 1: open page')
+    status, task_result = await run_task({"directive": "openPage", "data": {"url": test_url}})
+    if status == SUCC:
+        print('step 2: close page')
+        data = {
+            'url': task_result['res']['url'],
+            'tab_id': task_result['res']['tabId']
+        }
+        time.sleep(1)
+        status, task_result = await run_task({"directive": "closePage", "data": data})
 
     return text(json.dumps(task_result))
 
