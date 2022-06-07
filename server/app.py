@@ -1,4 +1,3 @@
-import json
 import time
 from asyncio import Queue
 
@@ -16,9 +15,10 @@ from web_module import (
     browser_go_forward,
     browser_get_tab,
     browser_get_tabs,
+    browser_is_loaded,
     element_click,
     element_set_input,
-    scroll
+    scroll, element_get_bounding_box
 )
 
 task_map = {
@@ -33,6 +33,8 @@ task_map = {
     'browser_get_tabs': browser_get_tabs,
     'element_click': element_click,
     'element_set_input': element_set_input,
+    'browser_is_loaded': browser_is_loaded,
+    'element_get_bounding_box': element_get_bounding_box,
     # 'select': select,
     # 'cancel_select': cancel_select,
     'scroll': scroll
@@ -55,26 +57,22 @@ async def run_task(data):
     task_result_queue = app.ctx.task_result_queue
 
     task_queue.put_nowait(data)
-    result = await task_result_queue.get()
-
-    try:
-        result = json.loads(result)
-        return SUCC, result
-    except Exception as e:
-        print(e)
-        return FAIL, result
+    status, result = await task_result_queue.get()
+    return status, result
 
 
 @app.websocket("/action")
 async def feed(request: Request, ws):
     while True:
+        task_result_queue = request.app.ctx.task_result_queue
         try:
             task_data = await request.app.ctx.task_queue.get()
             data = task_data.get('data', {})
             task_result = await task_map[task_data['directive']](ws, **data)
-            request.app.ctx.task_result_queue.put_nowait(task_result)
+            task_result_queue.put_nowait(task_result)
         except Exception as e:
             print(e)
+            raise e
             # todo put failed result back to queue
 
 
@@ -105,38 +103,45 @@ async def hello_world(request):
     return sanic.json(task_result)
 
 
+# 1. 打开美能华登录页
+# 2. 输入邮箱和密码
+# 3. 点击登录
 @app.get("/login_metis")
 async def hello_world(request):
     test_url = "https://www.meinenghua.com/user/login?redirect=https%3A%2F%2Fmetis.meinenghua.com"
     open_browser()
     status, task_result = await run_task({"directive": "browser_open", "data": {"url": test_url}})
     if status == SUCC:
-        time.sleep(2)
+        current_tab = task_result.get('tabId')
+
+        status, task_result = await run_task({"directive": "element_get_bounding_box", "data": {
+            "tab_id": current_tab,
+            "selector": "#email",
+        }})
 
         status, task_result = await run_task({"directive": "element_set_input", "data": {
-            "tab_id": task_result['res']['tabId'],
+            "tab_id": current_tab,
             "selector": "#email",
             "value": "xin.zhang@meinenghua.com"
         }})
 
         time.sleep(1)
-
         status, task_result = await run_task({"directive": "element_set_input", "data": {
-            "tab_id": task_result['res']['tabId'],
+            "tab_id": current_tab,
             "selector": "#password",
             "value": "123456"
         }})
 
         time.sleep(1)
-
         status, task_result = await run_task({"directive": "element_click", "data": {
-            "tab_id": task_result['res']['tabId'],
+            "tab_id": current_tab,
             "selector": "#userLayout > div > div.main > div.main > form > div:nth-child(4) > div > div > span > button"
         }})
 
     return sanic.json(task_result)
 
 
+# 关闭所有tab
 @app.get('/close_all')
 async def browser_close_all(request):
     status, task_result = await run_task({"directive": 'browser_close_all'})
@@ -146,19 +151,35 @@ async def browser_close_all(request):
     })
 
 
-@app.get("/open_and_close_tab")
+@app.get("/baidu")
 async def open_and_close_tab(request):
     test_url = "https://www.baidu.com/"
     print('step 1: open page')
+    open_browser()
     status, task_result = await run_task({"directive": "browser_open", "data": {"url": test_url}})
     if status == SUCC:
-        print('step 2: close page')
-        data = {
-            'url': task_result['res']['url'],
-            'tab_id': task_result['res']['tabId']
-        }
+        current_tab = task_result.get('tabId')
+        await run_task({"directive": "element_set_input", "data": {
+            "tab_id": current_tab,
+            "selector": "#kw",
+            "value": "高考"
+        }})
+
         time.sleep(1)
-        status, task_result = await run_task({"directive": "browser_close", "data": data})
+        await run_task({"directive": "element_click", "data": {
+            "tab_id": current_tab,
+            "selector": "#su",
+        }})
+
+        time.sleep(1)
+        await run_task({"directive": "element_click", "data": {
+            "tab_id": current_tab,
+            "xpath": '//*[@id="1"]/div/div[1]/h3/a[1]',
+        }})
+        time.sleep(1)
+        status, task_result = await run_task({"directive": "browser_close", "data": {
+            'tab_id': current_tab
+        }})
 
     return sanic.json(task_result)
 
