@@ -33,8 +33,8 @@ async def browser_open(ws, url, timeout=10):
     return FAIL, {'msg': 'page load timeout'}
 
 
-async def browser_close(ws, url, tab_id):
-    return await ws_swap_msg(ws, {"directive": "browser.close", "data": {"url": url, "tabId": tab_id}})
+async def browser_close(ws, tab_id):
+    return await ws_swap_msg(ws, {"directive": "browser.close", "data": {"tabId": tab_id}})
 
 
 async def browser_close_all(ws):
@@ -176,12 +176,12 @@ async def element_get_html(ws, tab_id, xpath='', selector=''):
     })
 
 
-async def select(ws):
-    return await ws_swap_msg(ws, {"directive": "select"})
-
-
-async def cancel_select(ws):
-    return await ws_swap_msg(ws, {"directive": "cancelSelect"})
+# async def select(ws):
+#     return await ws_swap_msg(ws, {"directive": "select"})
+#
+#
+# async def cancel_select(ws):
+#     return await ws_swap_msg(ws, {"directive": "cancelSelect"})
 
 
 async def scroll(ws, url, scroll_x=float('Infinity')):

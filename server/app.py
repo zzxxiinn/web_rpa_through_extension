@@ -166,22 +166,49 @@ async def open_and_close_tab(request):
         }})
 
         time.sleep(1)
-        await run_task({"directive": "element_click", "data": {
-            "tab_id": current_tab,
-            "selector": "#su",
-        }})
-
+        await run_task({"directive": "element_click", "data": {"tab_id": current_tab, "selector": "#su"}})
         time.sleep(1)
-        await run_task({"directive": "element_click", "data": {
-            "tab_id": current_tab,
-            "xpath": '//*[@id="1"]/div/div[1]/h3/a[1]',
-        }})
+        await run_task({"directive": "element_click", "data": {"tab_id": current_tab, "xpath": '//*[@id="1"]/div/div[1]/h3/a[1]'}})
         time.sleep(1)
-        status, task_result = await run_task({"directive": "browser_close", "data": {
-            'tab_id': current_tab
-        }})
+        status, task_result = await run_task({"directive": "browser_close", "data": {'tab_id': current_tab}})
 
     return sanic.json(task_result)
+
+
+@app.get("/login_github")
+async def login_github(request):
+    open_browser()
+    status, task_result = await run_task({"directive": "browser_open", "data": {"url": "https://github.com/"}})
+    if status == SUCC:
+        current_tab = task_result.get('tabId')
+        await run_task({"directive": "element_click", "data": {"tab_id": current_tab, "xpath": "/html/body/div[1]/header/div/div[2]/div[2]/div[2]/a"}})
+        time.sleep(2)
+        await run_task({"directive": "element_set_input", "data": {
+            "tab_id": current_tab,
+            "xpath": '//*[@id="login_field"]',
+            "value": "83443576@qq.com"
+        }})
+        time.sleep(0.5)
+        await run_task({"directive": "element_set_input", "data": {
+            "tab_id": current_tab,
+            "xpath": '//*[@id="password"]',
+            "value": "zxZX!@12"
+        }})
+        time.sleep(0.5)
+        await run_task({"directive": "element_click", "data": {"tab_id": current_tab, "xpath": '//*[@id="login"]/div[4]/form/div/input[12]'}})
+
+        time.sleep(3)
+        await run_task({"directive": "element_click", "data": {"tab_id": current_tab, "xpath": '/html/body/div[1]/header/div[3]/div/div/form/label/input[1]'}})
+        time.sleep(0.5)
+        await run_task({"directive": "element_set_input", "data": {
+            "tab_id": current_tab,
+            "xpath": '//*[@id="dashboard-repos-filter-left"]',
+            "value": "metis-ultra"
+        }})
+        time.sleep(0.5)
+        await run_task({"directive": "element_click", "data": {"tab_id": current_tab, "xpath": '//*[@id="repos-container"]/ul[1]/li[1]/div/div/a'}})
+
+    return sanic.text('hello')
 
 
 if __name__ == '__main__':
